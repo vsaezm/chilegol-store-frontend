@@ -9,6 +9,7 @@
 
 const { existsSync } = require('node:fs');
 const { join } = require('node:path');
+const { DefinePlugin } = require('webpack');
 
 module.exports = function (config) {
   if (process.platform === 'win32' && !process.env.CHROME_BIN) {
@@ -39,6 +40,7 @@ module.exports = function (config) {
     webpack: {
       mode: 'development',
       devtool: 'inline-source-map',
+      plugins: [new DefinePlugin({ 'import.meta.env.VITE_API_URL': JSON.stringify('') })],
       resolve: { extensions: ['.js', '.jsx'] },
       module: {
         rules: [
