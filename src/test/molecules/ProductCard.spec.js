@@ -3,6 +3,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ProductCard from '../../components/molecules/ProductCard';
+import { resolverImagen } from '../../data/products';
 import { mockProductos } from '../mocks/datos';
 
 function dibujar(producto, onAgregar = () => {}) {
@@ -29,5 +30,16 @@ describe('ProductCard (molécula)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Agregar al carrito' }));
 
     expect(onAgregar).toHaveBeenCalledOnceWith(mockProductos[0]);
+  });
+
+  it('muestra el respaldo si falla la imagen y evita volver a solicitarlo si también falla', () => {
+    dibujar(mockProductos[0]);
+    const imagen = screen.getByRole('img', { name: mockProductos[0].nombre });
+    fireEvent.error(imagen);
+    expect(imagen.getAttribute('src')).toBe(resolverImagen('sin-imagen.svg'));
+
+    const asignarSrc = spyOnProperty(imagen, 'src', 'set');
+    fireEvent.error(imagen);
+    expect(asignarSrc).not.toHaveBeenCalled();
   });
 });

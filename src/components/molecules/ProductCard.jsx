@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Button from '../atoms/Button';
+import { Image } from '../atoms/Image';
 import { resolverImagen } from '../../data/products';
 
 export default function ProductCard({ product, onAgregar }) {
@@ -18,7 +19,7 @@ export default function ProductCard({ product, onAgregar }) {
   return (
     <article className="caluga">
       <figure className="caluga__figura">
-        <img src={resolverImagen(product.imagen)} alt={product.nombre} />
+        <Image src={resolverImagen(product.imagen)} alt={product.nombre} />
       </figure>
       <div className="caluga__cuerpo">
         <span className="caluga__categoria">{product.categoria}</span>

@@ -1,5 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import Button from '../components/atoms/Button';
+import { Image } from '../components/atoms/Image';
+import { resolverImagen } from '../data/products';
 
 export default function ProductDetail({ productos, onAgregar }) {
   const { id } = useParams();
@@ -30,7 +32,7 @@ export default function ProductDetail({ productos, onAgregar }) {
 
         <div className="detalle">
           <figure className="detalle__galeria">
-            <img src={producto.imagen} alt={producto.nombre} />
+            <Image src={resolverImagen(producto.imagen)} alt={producto.nombre} />
           </figure>
 
           <div>

@@ -4,9 +4,10 @@
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import Button from '../atoms/Button';
+import { Image } from '../atoms/Image';
 import Input from '../atoms/Input';
 import FormGroup from '../molecules/FormGroup';
-import { categorias, imagenesDisponibles, IMAGEN_POR_DEFECTO } from '../../data/products';
+import { categorias, imagenesDisponibles, IMAGEN_POR_DEFECTO, resolverImagen } from '../../data/products';
 import {
   validarCodigoProducto,
   validarNombre,
@@ -97,13 +98,30 @@ export default function ProductForm({ producto = null, onGuardar, onCancelar }) 
         </div>
 
         <div className="campos-par">
-          <FormGroup id="imagen" label="Imagen" opcional ayuda="Ruta dentro de public, por ejemplo /images/goku-colocolo.webp.">
-            <Input type="text" list="imagenes-disponibles" placeholder={IMAGEN_POR_DEFECTO} {...register('imagen')} />
+          <FormGroup
+            id="imagen"
+            label="Imagen"
+            opcional
+            ayuda="Ruta dentro de public, por ejemplo /images/goku-colocolo.webp."
+          >
+            <Input
+              type="text"
+              list="imagenes-disponibles"
+              placeholder={IMAGEN_POR_DEFECTO}
+              {...register('imagen')}
+            />
           </FormGroup>
-          <img className="vista-previa" src={imagen || IMAGEN_POR_DEFECTO} alt="Vista previa de la imagen" />
+          <Image
+            className="vista-previa"
+            src={resolverImagen(imagen)}
+            alt="Vista previa de la imagen"
+          />
         </div>
+
         <datalist id="imagenes-disponibles">
-          {imagenesDisponibles.map((ruta) => <option key={ruta} value={ruta} />)}
+          {imagenesDisponibles.map((ruta) => (
+            <option key={ruta} value={ruta} />
+          ))}
         </datalist>
       </div>
 

@@ -1,5 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+import { Image } from '../components/atoms/Image';
 import ProductCard from '../components/molecules/ProductCard';
 import { resolverImagen } from '../data/products';
 
@@ -23,8 +23,8 @@ export default function Home({ productos = [], onAgregar }) {
           </div>
 
           <figure className="hero__figura">
-            <img 
-              src={resolverImagen("hero-tienda.webp")} 
+            <Image
+              src={resolverImagen("hero-tienda.webp")}
               alt="Goku con la camiseta de Colo-Colo y Vegeta con la de Universidad de Chile" 
               width="800" 
               height="560" 

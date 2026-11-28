@@ -1,7 +1,7 @@
 
 # Estado del proyecto ChileGol Store EV3
 
-Fecha de actualización: 26/11/2026.
+Actualizado el 28/11/2026 en la rama `ev3-frontend`.
 
 ## Información general
 
@@ -34,7 +34,8 @@ Rama de desarrollo: ev3-frontend.
 - [x] Actualizar .gitignore.
 - [x] Implementar ocho pruebas HTTP nuevas.
 - [x] Ejecutar 18 pruebas exitosamente.
-- [x] Publicar avances en GitHub.
+- [x] Publicar los cuatro primeros commits de EV3 en GitHub. La referencia de partida confirmada fue `5c7a10e`.
+- [x] Completar el paso 16 y verificar las imágenes en la compilación de producción local.
 
 ## Commits de EV3
 
@@ -47,25 +48,29 @@ fix(test): ejecutar Jasmine con la configuración real de Karma
 ab16481
 feat(frontend): implementar cliente HTTP y pruebas unitarias de API
 
-## Resultados de testing
+5c7a10e
+docs(ev3): documentar instrucciones y estado del frontend
 
-Fecha: 26/11/2026.
+## Paso 16 · Imágenes de la tienda
 
-Pruebas ejecutadas: 18.
-Pruebas exitosas: 18.
-Pruebas fallidas: 0.
+- En `src/data/products.js`, `resolverImagen` combina la base de Vite con el nombre de archivo. Acepta las rutas guardadas con `images/`, `public/images/` y `tienda_ropa/`, incluso con consulta, fragmento o la ñ ya codificada. Al crear o editar un producto se guarda el nombre codificado. Consultarlo conserva los datos existentes.
+- El selector ofrece las ocho imágenes de las camisetas iniciales. Cuatro nombres antiguos que ofrecía EP2 carecían de archivo. Si aparecen en datos guardados, se muestra la camiseta actual de Colo-Colo, U. de Chile, U. Católica o Cobreloa, según el equipo. El bloque de las ocho camisetas coincide con el de `5c7a10e`, incluidos precios, stock y descripciones.
+- `ProductCard.jsx`, `ProductForm.jsx`, `Home.jsx`, `Cart.jsx`, `ProductDetail.jsx` y `AdminProducts.jsx` usan el mismo resolvedor. El átomo `src/components/atoms/Image.jsx` muestra `sin-imagen.svg` si falla la carga y evita reintentar el propio respaldo.
+- `karma.conf.cjs` sirve las imágenes bajo una subruta de prueba. `src/test/services/imagenes.spec.js`, `src/test/molecules/ProductCard.spec.js` y `src/test/pages/App.spec.js` cubren la normalización, el respaldo y la navegación entre detalle y carrito con datos antiguos.
 
-Cobertura:
+## Verificación del paso 16
 
-- Sentencias: 51.22% (209/408).
-- Ramas: 46.10% (142/308).
-- Funciones: 52.94% (63/119).
-- Líneas: 57.01% (195/342).
+| Ejecución | Jasmine/Karma | Sentencias | Ramas | Funciones | Líneas |
+| --- | --- | --- | --- | --- | --- |
+| 26/11, cliente HTTP | 18/18 | 51.22% (209/408) | 46.10% (142/308) | 52.94% (63/119) | 57.01% (195/342) |
+| 26/11, 18:33:46, correcciones manuales | 26/26 | 51.69% (213/412) | 47.48% (151/318) | 52.94% (63/119) | 57.34% (199/347) |
+| 28/11, paso 16 completo | 30/30 | 44.44% (260/585) | 39.06% (168/430) | 41.14% (79/192) | 48.49% (241/497) |
 
-Compilación de producción: exitosa.
+La prueba que monta `App` incorpora al informe las páginas importadas por el enrutador. Esto amplía la cantidad de líneas medidas. Las 30 pruebas pasaron en Edge Headless y Karma terminó sin avisos 404 de imágenes.
 
-Módulos transformados: 69.
-Tiempo registrado: 323 ms.
+La compilación del 26/11 registró 69 módulos y 323 ms. Para el paso 16, `npm run build` terminó correctamente con Vite 8.3.4, 59 módulos y 313 ms. Los 11 archivos de `dist/images` coinciden por nombre y SHA-256 con `public/images`.
+
+En la vista previa local de producción bajo `/chilegol-store-frontend/`, se revisaron visualmente el inicio, el catálogo, el detalle, el carrito, la tabla administrativa y la vista previa del formulario. Edge cargó las ocho fotos del catálogo y mostró la camiseta de Unión Española a partir de una ruta antigua. También se comprobó el respaldo con el campo vacío y con un archivo inexistente.
 
 ## Modelo conceptual de datos
 
@@ -91,10 +96,6 @@ confirmarse mediante el backend real.
 
 ## Tareas pendientes
 
-- [ ] Prevenir rutas antiguas en LocalStorage.
-- [ ] Unificar resolución de imágenes.
-- [ ] Revisar advertencia de imagen en Karma.
-- [ ] Revisar advertencias de dependencias.
 - [ ] Obtener repositorio backend.
 - [ ] Analizar contrato real de la API.
 - [ ] Configurar VITE_API_URL.
@@ -118,31 +119,11 @@ confirmarse mediante el backend real.
 
 ## Problemas conocidos
 
-1. LocalStorage conservaba referencias a las
-   rutas anteriores de las imágenes.
-
-   Solución temporal aplicada:
-   eliminar únicamente la clave cgs_productos.
-
-   Solución permanente: pendiente.
-
-2. Karma mostró advertencias 404 relacionadas
-   con /sin-imagen.svg.
-
-3. Se registró una advertencia DEP0060 de Node.js.
-
-4. El contrato del backend todavía no está
-   disponible para el desarrollo frontend.
+- Node.js 24.22.0 emite `DEP0060` durante las pruebas. Karma 6.4.4 utiliza `http-proxy` 1.18.1 para servir su proxy y esa dependencia llama a `util._extend`. Las versiones figuran en el árbol local de npm.
+- La tienda, las cuentas, el carrito y el flujo de compra siguen usando los datos locales de EP2. Las ocho pruebas del cliente HTTP usan un doble de `fetch`. La comprobación contra un servidor real está pendiente del repositorio de Benjamín.
 
 ## Siguiente tarea
 
-Revisar la resolución de imágenes en el catálogo,
-el carrito y el panel administrativo.
-
-Evitar que LocalStorage conserve rutas dependientes
-del nombre anterior del repositorio.
-
-Después, continuar con la integración de la API
-cuando Benjamín entregue el código backend.
-
-No inventar endpoints ni simular conexiones reales.
+Revisar la recuperación del carrito local y actualizar la guía de ejecución del frontend.
+Para comenzar la integración, Benjamín debe compartir el repositorio backend o su contrato real de comunicación.
+La publicación de los nuevos commits en `origin/ev3-frontend` requiere autorización de Vicente.

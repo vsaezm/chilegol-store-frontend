@@ -5,34 +5,36 @@ const CLAVE_PRODUCTOS = "cgs_productos";
 
 export const categorias = ["Camisetas", "Shorts", "Abrigo", "Accesorios"];
 
-// Función para resolver rutas estáticas en Vite tanto en local como en GitHub Pages
-export function resolverImagen(nombreArchivo) {
-  if (!nombreArchivo) return new URL('../../public/images/sin-imagen.svg', import.meta.url).href;
-  // Si trae el prefijo 'images/', se lo quitamos para buscarlo directo en public/images/
-  const limpio = nombreArchivo.replace(/^images\//, '').replace(/^\//, '');
+export const IMAGEN_POR_DEFECTO = "sin-imagen.svg";
+
+// Nombres que ofrecía el formulario de EP2 para estas mismas camisetas.
+const imagenesAnteriores = new Map([
+  ["camiseta-colo-colo.webp", "goku-colocolo.webp"],
+  ["camiseta-universidad-de-chile.webp", "goku-udechile.webp"],
+  ["camiseta-universidad-catolica.webp", "goku-ucatolica.webp"],
+  ["camiseta-cobreloa.webp", "goku-cobreloa.webp"],
+]);
+
+function nombreImagenLocal(nombreArchivo) {
+  const valor = String(nombreArchivo ?? "").trim();
+  const archivo = valor.split(/[?#]/)[0].split("/").pop() || IMAGEN_POR_DEFECTO;
   try {
-    return new URL(`../../public/images/${limpio}`, import.meta.url).href;
-  } catch (e) {
-    return new URL('../../public/images/sin-imagen.svg', import.meta.url).href;
+    const nombre = decodeURIComponent(archivo);
+    if (nombre.includes("/") || nombre.includes("\\") || nombre === "." || nombre === "..") {
+      return IMAGEN_POR_DEFECTO;
+    }
+    return encodeURIComponent(imagenesAnteriores.get(nombre) ?? nombre);
+  } catch {
+    return IMAGEN_POR_DEFECTO;
   }
 }
 
-export const imagenesDisponibles = [
-  "goku-colocolo.webp",
-  "goku-udechile.webp",
-  "goku-ucatolica.webp",
-  "goku-cobreloa.webp",
-  "krilin-wanderers.webp",
-  "vegeta-uespañola.webp",
-  "piccolo-palestino.webp",
-  "tenshinhan-ohiggins.webp",
-  "camiseta-colo-colo.webp",
-  "camiseta-universidad-de-chile.webp",
-  "camiseta-universidad-catolica.webp",
-  "camiseta-cobreloa.webp",
-];
-
-export const IMAGEN_POR_DEFECTO = "sin-imagen.svg";
+// Los datos guardan el nombre del archivo. Vite aporta la base al mostrarlo.
+export function resolverImagen(nombreArchivo) {
+  const base = import.meta.env?.BASE_URL || "/";
+  const rutaBase = base.endsWith("/") ? base : base + "/";
+  return `${rutaBase}images/${nombreImagenLocal(nombreArchivo)}`;
+}
 
 export const productosIniciales = [
   {
@@ -133,6 +135,8 @@ export const productosIniciales = [
   }
 ];
 
+export const imagenesDisponibles = productosIniciales.map((producto) => producto.imagen);
+
 export function getProductos() {
   const guardados = leer(CLAVE_PRODUCTOS, null);
   if (!Array.isArray(guardados)) {
@@ -165,7 +169,6 @@ export function saveProductos(lista) {
 
 function normalizar(datos) {
   const critico = String(datos.stockCritico ?? "").trim();
-  const imagen = String(datos.imagen ?? "").trim();
   return {
     codigo: String(datos.codigo).trim().toUpperCase(),
     nombre: String(datos.nombre).trim(),
@@ -175,7 +178,7 @@ function normalizar(datos) {
     stock: parseInt(datos.stock, 10),
     stockCritico: critico === "" ? "" : parseInt(critico, 10),
     categoria: datos.categoria,
-    imagen: imagen === "" ? IMAGEN_POR_DEFECTO : imagen,
+    imagen: nombreImagenLocal(datos.imagen),
   };
 }
 

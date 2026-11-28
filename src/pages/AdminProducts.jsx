@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { Link, useOutletContext, useSearchParams } from 'react-router-dom';
 import Button from '../components/atoms/Button';
+import { Image } from '../components/atoms/Image';
 import ProductForm from '../components/organisms/ProductForm';
 import {
   getProductos,
@@ -12,6 +13,7 @@ import {
   eliminarProducto,
   existeCodigo,
   estaEnStockCritico,
+  resolverImagen,
 } from '../data/products';
 import { formatearPrecio } from '../utils/formato';
 
@@ -118,7 +120,7 @@ export default function AdminProducts() {
           <tbody>
             {productos.map((p) => (
               <tr key={p.id}>
-                <td><img className="tabla__miniatura" src={p.imagen} alt="" /></td>
+                <td><Image className="tabla__miniatura" src={resolverImagen(p.imagen)} alt={p.nombre} /></td>
                 <td>{p.codigo}</td>
                 <td>{p.nombre}</td>
                 <td>{p.categoria}</td>

@@ -10,6 +10,7 @@
 const { existsSync } = require('node:fs');
 const { join } = require('node:path');
 const { DefinePlugin } = require('webpack');
+const basePruebas = '/tienda-de-prueba/';
 
 module.exports = function (config) {
   if (process.platform === 'win32' && !process.env.CHROME_BIN) {
@@ -30,7 +31,7 @@ module.exports = function (config) {
       { pattern: 'public/images/*', included: false, served: true, watched: false },
     ],
     proxies: {
-      '/images/': '/base/public/images/',
+      [`${basePruebas}images/`]: '/base/public/images/',
     },
 
     preprocessors: {
@@ -40,6 +41,7 @@ module.exports = function (config) {
     webpack: {
       mode: 'development',
       devtool: 'inline-source-map',
+      output: { publicPath: basePruebas },
       plugins: [new DefinePlugin({ 'import.meta.env.VITE_API_URL': JSON.stringify('') })],
       resolve: { extensions: ['.js', '.jsx'] },
       module: {

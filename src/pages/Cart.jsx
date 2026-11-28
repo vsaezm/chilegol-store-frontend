@@ -1,5 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/atoms/Button';
+import { Image } from '../components/atoms/Image';
+import { resolverImagen } from '../data/products';
 
 export default function Cart({ carrito, onCambiarCantidad, onEliminar, onVaciar }) {
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ export default function Cart({ carrito, onCambiarCantidad, onEliminar, onVaciar 
             {carrito.map((item) => (
               <div key={item.id} className="linea">
                 <figure className="linea__figura">
-                  <img src={item.imagen} alt={item.nombre} />
+                  <Image src={resolverImagen(item.imagen)} alt={item.nombre} />
                 </figure>
                 <div className="linea__cuerpo">
                   <span className="linea__nombre">{item.nombre}</span>
