@@ -36,6 +36,7 @@ Rama de desarrollo: ev3-frontend.
 - [x] Ejecutar 18 pruebas exitosamente.
 - [x] Publicar los cuatro primeros commits de EV3 en GitHub. La referencia de partida confirmada fue `5c7a10e`.
 - [x] Completar el paso 16 y verificar las imágenes en la compilación de producción local.
+- [x] Recuperar el carrito ante datos inválidos y actualizar la guía de ejecución.
 
 ## Commits de EV3
 
@@ -52,6 +53,8 @@ feat(frontend): implementar cliente HTTP y pruebas unitarias de API
 docs(ev3): documentar instrucciones y estado del frontend
 
 `8e31ef6` — Normalizar las rutas de imágenes y agregar pruebas unitarias (paso 16).
+
+`3de3a0d` — Recuperar los datos del carrito ante errores de almacenamiento.
 
 ## Paso 16 · Imágenes de la tienda
 
@@ -81,6 +84,12 @@ Cuatro pruebas en `src/test/pages/App.spec.js` reprodujeron fallos al abrir la t
 `src/data/carrito.js` reutiliza las funciones de lectura y escritura de `src/data/storage.js`. Recupera las líneas válidas y admite cantidades y precios guardados como texto numérico. `src/App.jsx` guarda el carrito cuando el usuario lo modifica. Si el navegador bloquea el almacenamiento, las compras en curso se mantienen en memoria mientras la aplicación esté abierta.
 
 Después de la corrección, pasaron las 34 pruebas en Edge Headless. La cobertura fue del 47.77% de sentencias (290/607), 42.69% de ramas (193/452), 44.84% de funciones (87/194) y 51.75% de líneas (266/514). La compilación de producción terminó en 595 ms con 60 módulos.
+
+## Preparación de la integración
+
+- El `README.md` recoge el entorno probado, la ruta del catálogo, la vista previa de producción y la configuración pública de `VITE_API_URL`. Entre los archivos de entorno, Git solo registra `.env.example` y excluye `.env.local`.
+- La única llamada a `fetch` de la aplicación está en `src/services/api.js`. Sus pruebas cubren errores HTTP, errores de red, JSON inválido, respuestas vacías y cancelación. Las pantallas actuales leen los datos locales de forma síncrona. Sus estados de carga y sus mensajes de error de servidor se implementarán con cada integración real.
+- `npm run lint` pasó tras retirar dos importaciones de React sin uso en `Home.jsx` y `AdminUser.jsx`. La verificación final del 28/11 dio 34/34 pruebas aprobadas, 60 módulos compilados en 658 ms y 11/11 imágenes servidas con HTTP 200 y el tipo de imagen correcto.
 
 ## Modelo conceptual de datos
 
@@ -124,7 +133,6 @@ confirmarse mediante el backend real.
 - [ ] Integrar detalles de venta.
 - [ ] Integrar panel administrativo.
 - [ ] Ejecutar pruebas de integración.
-- [ ] Actualizar README.
 - [ ] Preparar entrega final.
 
 ## Problemas conocidos
@@ -134,6 +142,5 @@ confirmarse mediante el backend real.
 
 ## Siguiente tarea
 
-Actualizar la guía de ejecución y comprobar ESLint en todo el proyecto.
-Para comenzar la integración, Benjamín debe compartir el repositorio backend o su contrato real de comunicación.
+Solicitar el repositorio backend de Benjamín y revisar en él las rutas, los formatos de respuesta y los requisitos de autenticación. Sobre la URL real y el contrato del servidor, «No tengo información segura sobre esto».
 La publicación de los nuevos commits en `origin/ev3-frontend` requiere autorización de Vicente.

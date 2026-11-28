@@ -1,6 +1,6 @@
-# ChileGol Store 2.0 (React)
+# ChileGol Store · Frontend EV3
 
-Tienda online de camisetas del fútbol chileno, migrada de HTML/CSS/JS a **React + Vite** con Atomic Design, **react-hook-form**, persistencia en **localStorage** y 10 pruebas unitarias con **Jasmine y Karma**.
+Tienda de camisetas del fútbol chileno desarrollada con React, Vite, Atomic Design y React Hook Form. EV3 continúa el frontend de EP2. El catálogo, las cuentas y el carrito funcionan con datos locales mientras el equipo prepara la integración con el backend.
 
 Proyecto de la asignatura Desarrollo Fullstack II, Duoc UC.
 
@@ -11,21 +11,24 @@ Proyecto de la asignatura Desarrollo Fullstack II, Duoc UC.
 
 ## Cómo ejecutarlo
 
-Requisitos: Node.js 20.19 o superior y Google Chrome (para las pruebas).
+Entorno comprobado con Node.js 24.22.0. Las pruebas necesitan Chrome o, en Windows, Microsoft Edge. Para instalar las versiones de `package-lock.json` en una copia nueva del repositorio, ejecuta lo siguiente en la rama `ev3-frontend`.
 
 ```bash
-npm install
-npm run dev        # tienda en http://localhost:5173
+npm ci
+npm run dev
 ```
+
+Abre la dirección que imprime Vite. La aplicación se sirve bajo `/chilegol-store-frontend/` y usa `HashRouter`. El catálogo se abre en `/chilegol-store-frontend/#/productos`.
 
 | Comando | Qué hace |
 | --- | --- |
 | `npm run build` | Genera la versión final en `dist/` |
+| `npm run preview` | Sirve localmente la última compilación de `dist/` |
 | `npm run lint` | Revisa el código con ESLint |
-| `npm test` | Abre Chrome y ejecuta las 10 pruebas (vuelve a correrlas si cambias un archivo) |
+| `npm test` | Abre el navegador de pruebas y vuelve a ejecutar Jasmine al cambiar un archivo |
 | `npm run test:ci` | Ejecuta las pruebas una vez, sin ventana, y deja la cobertura en `coverage/index.html` |
 
-## Cuentas de prueba
+## Cuentas de demostración local
 
 | Correo | Contraseña | Rol | Puede |
 | --- | --- | --- | --- |
@@ -57,15 +60,22 @@ src/
 │   ├── molecules/     ProductCard, FormGroup (etiqueta + campo + ayuda + error)
 │   ├── organisms/     NavbarHeader, AdminSidebar, ProductForm, UserForm
 │   └── templates/     MainLayout (tienda) y AdminLayout (panel protegido por rol)
-├── data/              products.js y users.js: datos iniciales + CRUD con localStorage, regiones.js
+├── data/              Catálogos, usuarios, regiones y persistencia local del carrito
 ├── pages/             Una página por ruta
-├── test/              setupTests.js, mocks/ y las pruebas en atoms/, molecules/ y pages/
+├── services/          api.js contiene el cliente HTTP compartido
+├── test/              Configuración, datos de prueba y casos de componentes, páginas y servicios
 └── utils/             validaciones.js (reglas de la v1 para react-hook-form) y formato.js
 ```
 
 ## Datos y persistencia
 
-Los productos y usuarios parten de `src/data/products.js` y `src/data/users.js`. Todo cambio hecho desde el panel o el registro se guarda en `localStorage` (`cgs_productos`, `cgs_usuarios`, `cgs_sesion`, `cgs_carrito`). Para volver a los datos iniciales, borra los datos del sitio en el navegador.
+Los productos y usuarios parten de `src/data/products.js` y `src/data/users.js`. La tienda utiliza `cgs_productos`, `cgs_usuarios`, `cgs_sesion` y `cgs_carrito` en `localStorage`. Las imágenes guardadas con rutas de EP2 se resuelven al mostrarlas. El carrito recupera las líneas válidas y, cuando el almacenamiento está bloqueado, permite seguir agregando artículos durante la sesión.
+
+## Conexión con el backend
+
+`src/services/api.js` exporta `solicitarApi`, `crearClienteApi` y `ErrorHttp`. Las ocho pruebas HTTP interceptan `fetch` y se pueden ejecutar sin servidor.
+
+Cuando Benjamín confirme la URL base y el contrato de la API, copia `.env.example` a `.env.local`, asigna esa URL a `VITE_API_URL` y reinicia Vite. Las variables `VITE_` son públicas y se incorporan a la compilación. La aplicación actual se puede ejecutar con `VITE_API_URL` vacía.
 
 ## Validaciones de los formularios
 
@@ -79,4 +89,5 @@ Son las mismas de la versión 1 (`src/utils/validaciones.js`), aplicadas con rea
 
 ## Documentos
 
-- [Cobertura del testing](docs/Cobertura_Testing.md)
+- [Estado de EV3, verificaciones y tareas pendientes](docs/ESTADO_EV3.md)
+- [Informe histórico de las 10 pruebas de EP2](docs/Cobertura_Testing.md)
