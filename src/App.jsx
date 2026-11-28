@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { getProductos } from './data/products';
+import { leerCarrito, guardarCarrito } from './data/carrito';
 import { getSesion, cerrarSesion, refrescarSesion } from './data/users';
 import MainLayout from './components/templates/MainLayout';
 import AdminLayout from './components/templates/AdminLayout';
@@ -22,13 +23,15 @@ import AdminUsers from './pages/AdminUsers';
 export default function App() {
   const [productos, setProductos] = useState(getProductos);
   const [usuario, setUsuario] = useState(getSesion);
-  const [carrito, setCarrito] = useState(() => {
-    const guardado = localStorage.getItem('cgs_carrito');
-    return guardado ? JSON.parse(guardado) : [];
-  });
+  const [carrito, setCarrito] = useState(leerCarrito);
+  const carritoAnterior = useRef(carrito);
 
   useEffect(() => {
-    localStorage.setItem('cgs_carrito', JSON.stringify(carrito));
+    // Abrir la tienda conserva los datos originales, incluso si hubo que recuperar líneas.
+    if (carrito !== carritoAnterior.current) {
+      guardarCarrito(carrito);
+      carritoAnterior.current = carrito;
+    }
   }, [carrito]);
 
   const agregarAlCarrito = (prod) => {

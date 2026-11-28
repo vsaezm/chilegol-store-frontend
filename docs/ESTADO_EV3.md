@@ -51,6 +51,8 @@ feat(frontend): implementar cliente HTTP y pruebas unitarias de API
 5c7a10e
 docs(ev3): documentar instrucciones y estado del frontend
 
+`8e31ef6` — Normalizar las rutas de imágenes y agregar pruebas unitarias (paso 16).
+
 ## Paso 16 · Imágenes de la tienda
 
 - En `src/data/products.js`, `resolverImagen` combina la base de Vite con el nombre de archivo. Acepta las rutas guardadas con `images/`, `public/images/` y `tienda_ropa/`, incluso con consulta, fragmento o la ñ ya codificada. Al crear o editar un producto se guarda el nombre codificado. Consultarlo conserva los datos existentes.
@@ -71,6 +73,14 @@ La prueba que monta `App` incorpora al informe las páginas importadas por el en
 La compilación del 26/11 registró 69 módulos y 323 ms. Para el paso 16, `npm run build` terminó correctamente con Vite 8.3.4, 59 módulos y 313 ms. Los 11 archivos de `dist/images` coinciden por nombre y SHA-256 con `public/images`.
 
 En la vista previa local de producción bajo `/chilegol-store-frontend/`, se revisaron visualmente el inicio, el catálogo, el detalle, el carrito, la tabla administrativa y la vista previa del formulario. Edge cargó las ocho fotos del catálogo y mostró la camiseta de Unión Española a partir de una ruta antigua. También se comprobó el respaldo con el campo vacío y con un archivo inexistente.
+
+## Recuperación del carrito local
+
+Cuatro pruebas en `src/test/pages/App.spec.js` reprodujeron fallos al abrir la tienda con JSON incompleto, un objeto en lugar de una lista, una línea dañada o el almacenamiento bloqueado por el navegador.
+
+`src/data/carrito.js` reutiliza las funciones de lectura y escritura de `src/data/storage.js`. Recupera las líneas válidas y admite cantidades y precios guardados como texto numérico. `src/App.jsx` guarda el carrito cuando el usuario lo modifica. Si el navegador bloquea el almacenamiento, las compras en curso se mantienen en memoria mientras la aplicación esté abierta.
+
+Después de la corrección, pasaron las 34 pruebas en Edge Headless. La cobertura fue del 47.77% de sentencias (290/607), 42.69% de ramas (193/452), 44.84% de funciones (87/194) y 51.75% de líneas (266/514). La compilación de producción terminó en 595 ms con 60 módulos.
 
 ## Modelo conceptual de datos
 
@@ -124,6 +134,6 @@ confirmarse mediante el backend real.
 
 ## Siguiente tarea
 
-Revisar la recuperación del carrito local y actualizar la guía de ejecución del frontend.
+Actualizar la guía de ejecución y comprobar ESLint en todo el proyecto.
 Para comenzar la integración, Benjamín debe compartir el repositorio backend o su contrato real de comunicación.
 La publicación de los nuevos commits en `origin/ev3-frontend` requiere autorización de Vicente.
